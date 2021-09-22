@@ -878,7 +878,7 @@ if($xdoc.site.BrokeraccesspolicyRules){
             }
             Write-Host "OK" -ForegroundColor Green
         } else {
-            Write-Host $Brokerpowertimescheme.Name "already exists. BrokeraccesspolicyRule won't be modified by this script." -ForegroundColor Yellow
+            Write-Host $BrokeraccesspolicyRule.Name "already exists. BrokeraccesspolicyRule won't be modified by this script." -ForegroundColor Yellow
             Write-Host "Check manually BrokeraccesspolicyRule's properties." -ForegroundColor Yellow
         }
     }
