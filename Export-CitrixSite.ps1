@@ -687,8 +687,12 @@ try {
         $oXMLApplicationGroup = $oXMLApplicationsGroups.appendChild($Doc.CreateElement("ApplicationGroup"))
         $oxmlApplicationGroupname = $oXMLApplicationGroup.appendChild($Doc.CreateElement("Name"))
         $oxmlApplicationGroupname.InnerText = $ApplicationGroup.Name
-        $oxmlApplicationGroupAdminFolderName= $oXMLApplicationGroup.appendChild($Doc.CreateElement("AdminFolderName"))
-        $oxmlApplicationGroupAdminFolderName.InnerText = $ApplicationGroup.AdminFolderName
+        try{
+            if($ApplicationGroup.AdminFolderName -ne ""){
+                $oxmlApplicationGroupAdminFolderName= $oXMLApplicationGroup.appendChild($Doc.CreateElement("AdminFolderName"))
+            $oxmlApplicationGroupAdminFolderName.InnerText = $ApplicationGroup.AdminFolderName
+            }
+        }
         $AssociatedDesktopGroupPriorities = $ApplicationGroup.AssociatedDesktopGroupPriorities
         foreach ($AssociatedDesktopGroupPriority in $AssociatedDesktopGroupPriorities){
             $oXMLApplicationGroupAssociatedDesktopPriority = $oXMLApplicationGroup.appendChild($Doc.CreateElement("AssociatedDesktopGroupPriority"))
