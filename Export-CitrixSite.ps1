@@ -676,6 +676,68 @@ catch {
 Write-Host "OK" -ForegroundColor Green
 
 ################################################################################################
+#Enumerating ApplicationsGroups
+################################################################################################
+
+Write-Host "Enumerating Application Groups config... " -NoNewline
+try {
+    $oXMLApplicationsGroups = $oXMLRoot.appendChild($Doc.CreateElement("ApplicationGroups"))
+    $ApplicationGroups = Get-BrokerApplicationGroup
+    foreach ($ApplicationGroup in $ApplicationGroups) {
+        $oXMLApplicationGroup = $oXMLApplicationsGroups.appendChild($Doc.CreateElement("ApplicationGroup"))
+        $oxmlApplicationGroupname = $oXMLApplicationGroup.appendChild($Doc.CreateElement("Name"))
+        $oxmlApplicationGroupname.InnerText = $ApplicationGroup.Name
+        $oxmlApplicationGroupAdminFolderName= $oXMLApplicationGroup.appendChild($Doc.CreateElement("AdminFolderName"))
+        $oxmlApplicationGroupAdminFolderName.InnerText = $ApplicationGroup.AdminFolderName
+        $AssociatedDesktopGroupPriorities = $ApplicationGroup.AssociatedDesktopGroupPriorities
+        foreach ($AssociatedDesktopGroupPriority in $AssociatedDesktopGroupPriorities){
+            $oXMLApplicationGroupAssociatedDesktopPriority = $oXMLApplicationGroup.appendChild($Doc.CreateElement("AssociatedDesktopGroupPriority"))
+            $oXMLApplicationGroupAssociatedDesktopPriority.InnerText = $AssociatedDesktopGroupPriority
+        }
+        $AssociatedDesktopGroupUids = $ApplicationGroup.AssociatedDesktopGroupUids
+        foreach ($AssociatedDesktopGroupUid in $AssociatedDesktopGroupUids){
+            $oXMLApplicationGroupAssociatedDesktopGroupUid = $oXMLApplicationGroup.appendChild($Doc.CreateElement("AssociatedDesktopGroupUid"))
+            $oXMLApplicationGroupAssociatedDesktopGroupUid.InnerText = $AssociatedDesktopGroupUid
+        }
+        $AssociatedUserFullNames = $ApplicationGroup.AssociatedUserFullNames
+        foreach ($AssociatedUserFullName in $AssociatedUserFullNames){
+            $oXMLApplicationGroupUserFullName = $oXMLApplicationGroup.appendChild($Doc.CreateElement("AssociatedUserFullName"))
+            $oXMLApplicationGroupUserFullName.InnerText = $AssociatedUserFullName
+        }
+        $oXMLApplicationGroupDescription = $oXMLApplicationGroup.appendChild($Doc.CreateElement("Description"))
+        $oXMLApplicationGroupDescription.InnerText = $ApplicationGroup.Description
+        $oXMLApplicationGroupEnabled = $oXMLApplicationGroup.appendChild($Doc.CreateElement("Enabled"))
+        $oXMLApplicationGroupEnabled.InnerText = $ApplicationGroup.Enabled
+        $oxmlApplicationGroupApplicationGroupname = $oXMLApplicationGroup.appendChild($Doc.CreateElement("ApplicationGroupName"))
+        $oxmlApplicationGroupApplicationGroupname.InnerText = $ApplicationGroup.ApplicationGroupName
+        $oXMLApplicationGroupRestrictToTag = $oXMLApplicationGroup.appendChild($Doc.CreateElement("RestrictToTag"))
+        $oXMLApplicationGroupRestrictToTag.InnerText = $ApplicationGroup.RestrictToTag
+        $Scopes = $ApplicationGroup.Scopes
+        foreach ($Scope in $Scopes){
+            $oXMLApplicationGroupUserScope = $oXMLApplicationGroup.appendChild($Doc.CreateElement("Scope"))
+            $oXMLApplicationGroupUserScope.InnerText = $Scope
+        }
+        $oXMLApplicationGroupSessionSharingEnabled = $oXMLApplicationGroup.appendChild($Doc.CreateElement("SessionSharingEnabled"))
+        $oXMLApplicationGroupSessionSharingEnabled.InnerText = $ApplicationGroup.SessionSharingEnabled
+        $oXMLApplicationGroupSingleAppPerSession = $oXMLApplicationGroup.appendChild($Doc.CreateElement("SingleAppPerSession"))
+        $oXMLApplicationGroupSingleAppPerSession.InnerText = $ApplicationGroup.SingleAppPerSession
+        $Tags = $ApplicationGroup.Tags
+        foreach ($Tag in $Tags){
+            $oXMLApplicationGroupTag= $oXMLApplicationGroup.appendChild($Doc.CreateElement("Tag"))
+            $oXMLApplicationGroupTag.InnerText = $Tag
+        }
+        $oXMLApplicationGroupUserFilterEnabled = $oXMLApplicationGroup.appendChild($Doc.CreateElement("UserFilterEnabled"))
+        $oXMLApplicationGroupUserFilterEnabled.InnerText = $ApplicationGroup.UserFilterEnabled
+    }
+}
+catch {
+    Write-Host "An error occured while enumerating Application Group config" -ForegroundColor Red
+    Stop-Transcript
+    break
+} 
+Write-Host "OK" -ForegroundColor Green
+
+################################################################################################
 #Enumerating PublishedApps
 ################################################################################################
 
@@ -709,6 +771,12 @@ try {
         $oxmlPublishedAppApplicationName.InnerText = $PublishedApp.ApplicationName
         $oxmlPublishedAppApplicationType = $oxmlPublishedApp.appendChild($Doc.CreateElement("ApplicationType"))
         $oxmlPublishedAppApplicationType.InnerText = $PublishedApp.ApplicationType
+        $AssociatedApplicationGroupUids = $PublishedApp.AssociatedApplicationGroupUids
+        foreach ($AssociatedApplicationGroupUid in $AssociatedApplicationGroupUids){
+            $oxmlPublishedAppAssociatedApplicationGroupName = $oxmlPublishedApp.appendChild($Doc.CreateElement("AssociatedApplicationGroupName"))
+            $AssociatedApplicationGroupName = (Get-BrokerApplicationGroup -Uid $AssociatedApplicationGroupUid).Name
+            $oxmlPublishedAppAssociatedApplicationGroupName.InnerText = $AssociatedApplicationGroupName
+        }
         $AssociatedDesktopGroupUids = $PublishedApp.AssociatedDesktopGroupUids
         foreach ($AssociatedDesktopGroupUid in $AssociatedDesktopGroupUids){
             $oxmlPublishedAppAssociatedDesktopGroupName = $oxmlPublishedApp.appendChild($Doc.CreateElement("AssociatedDesktopGroupName"))

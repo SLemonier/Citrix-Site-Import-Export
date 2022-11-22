@@ -937,6 +937,109 @@ if($xdoc.site.Brokerrebootschedules){
 }
 
 ################################################################################################
+#Setting Application Groups
+################################################################################################
+
+Write-Host "Setting Application Groups config... "
+if($xdoc.site.ApplicationGroups){
+    $ApplicationGroups = $xdoc.site.ApplicationGroups.ApplicationGroup
+    foreach($ApplicationGroup in $ApplicationGroups){
+        if(!(Get-BrokerapplicationGroup -Name $ApplicationGroup.Name -errorAction SilentlyContinue)){
+            Write-host "Adding new Application Group" $ApplicationGroup.Name"... " -NoNewline
+            $command = "New-BrokerapplicationGroup -Name """ + $ApplicationGroup.Name + """"
+            if($ApplicationGroup.AdminFolderName -ne ""){
+                $command += " -AdminFolder """ + $ApplicationGroup.AdminFolderName + """"
+            }
+            $command += " -Description """ + $ApplicationGroup.Description + """"
+            if($ApplicationGroup.Enabled -match "True"){
+                $command += " -Enabled `$True"
+            }
+            if($ApplicationGroup.Enabled -match "False"){
+                $command += " -Enabled `$False"
+            }
+            if($ApplicationGroup.SessionSharingEnabled -match "True"){
+                $command += " -SessionSharingEnabled `$True"
+            }
+            if($ApplicationGroup.SessionSharingEnabled -match "False"){
+                $command += " -SessionSharingEnabled `$False"
+            }
+            if($ApplicationGroup.SingleAppPerSession -match "True"){
+                $command += " -SingleAppPerSession `$True"
+            }
+            if($ApplicationGroup.SingleAppPerSession -match "False"){
+                $command += " -SingleAppPerSession `$False"
+            }
+            if($ApplicationGroup.UserFilterEnabled -match "True"){
+                $command += " -UserFilterEnabled `$True"
+            }
+            if($ApplicationGroup.UserFilterEnabled -match "False"){
+                $command += " -UserFilterEnabled `$False"
+            }
+            try {
+                $count = $ApplicationGroup.RestrictToTag.count
+                $i=0
+                $command += " -RestrictToTag """
+                while ($i -lt $count) {
+                    $command += $ApplicationGroup.RestrictToTag[$i]
+                    if($i -ne ($count - 1)){
+                        $command += ""","""
+                    } else {
+                        $command += """"
+                    }
+                    $i++
+                }
+            }
+            catch {
+                try { #Only one IncludedUsers is declared
+                    $command += " -RestrictToTag """ + $ApplicationGroup.RestrictToTag + """"
+                }
+                catch {
+                    #No IncludedUsers to assign
+                }
+            }
+            try {
+                $AppGroup = Invoke-Expression $command
+                try {
+                    $count = $PublishedApp.AssociatedUserFullName.count
+                    $i=0
+                    while ($i -lt $count) {
+                        $AssociatedUserFullName = "$env:USERDOMAIN\" + $ApplicationGroup.AssociatedUserFullName[$i]
+                        Add-BrokerUser -Name $AssociatedUserFullName -ApplicationGroup $AppGroup
+                        $i++
+                    }
+                }
+                catch {
+                    try{
+                        $AssociatedUserFullName = "$env:USERDOMAIN\" + $PublishedApp.AssociatedUserFullName
+                        Add-BrokerUser -Name $AssociatedUserFullName -ApplicationGroup $AppGroup
+                    }
+                    catch {
+                        #No User to assign to
+                    }
+                }
+                # if($j -ne 0){
+                #     while($j -lt $countj){
+                #         Add-BrokerApplication $App -DesktopGroup $PublishedApp.AssociatedDesktopGroupName[$j]
+                #         $j++
+                #     }
+                # }
+            }
+            catch {
+                Write-Host "An error occured while adding a new Application Group" -ForegroundColor Red
+                Stop-Transcript
+                break
+            }
+            Write-Host "OK" -ForegroundColor Green
+        } else {
+            Write-Host $ApplicationGroup.Name "already exists. Application Group won't be modified by this script." -ForegroundColor Yellow
+            Write-Host "Check manually Application Group's properties." -ForegroundColor Yellow
+        }
+    }
+} else {
+    Write-Host "No Application Group to import" -ForegroundColor Yellow
+}
+
+################################################################################################
 #Setting PublishedApps
 ################################################################################################
 
@@ -949,18 +1052,37 @@ if($xdoc.site.PublishedApps){
             $command = "New-Brokerapplication -Name """ + $PublishedApp.PublishedName + """"
             $command += " -CommandLineExecutable """ + $PublishedApp.CommandLineExecutable + """"
             $j=0
+            $DGAssociated = $false
             try {
                 $countj = $PublishedApp.AssociatedDesktopGroupName.count
-                $command += " -DesktopGroup """ + $PublishedApp.AssociatedDesktopGroupName[$j] + """"
-                $j++
+                if($countj -ne 0){
+                    $command += " -DesktopGroup """ + $PublishedApp.AssociatedDesktopGroupName[$j] + """"
+                    $j++
+                }
             }
             catch {
                 $command += " -DesktopGroup """ + $PublishedApp.AssociatedDesktopGroupName + """"
+                $DGAssociated = $True
+            }
+            $k=0
+            try {
+                $countk = $PublishedApp.AssociatedApplicationGroupName.count
+                if($countk -ne 0 -and $DGAssociated -eq $false){
+                    $command += " -ApplicationGroup """ + $PublishedApp.AssociatedApplicationGroupName[$k]+ """"
+                    $k++
+                }
+            }
+            catch {
+                if($DGAssociated -eq $false){
+                    $command += " -ApplicationGroup """ + $PublishedApp.AssociatedApplicationGroupName + """"
+                }
             }
             if(!(Get-BrokerAdminFolder -Name $PublishedApp.AdminFolderName -errorAction SilentlyContinue)){
                 New-BrokerAdminFolder -FolderName $PublishedApp.AdminFolderName.Replace("\","") | Out-Null
             }
-            $command += " -AdminFolder """ + $PublishedApp.AdminFolderName + """"
+            if($PublishedApp.AdminFolderName -ne ""){
+                $command += " -AdminFolder """ + $PublishedApp.AdminFolderName + """"
+            }
             $command += " -ApplicationType """ + $PublishedApp.ApplicationType + """"
             if($PublishedApp.CommandLineArguments -match "%" -and $PublishedApp.CommandLineArguments -notlike "%*"){
                 $command += " -CommandLineArguments """ + "```"%*``"""""
@@ -1011,8 +1133,6 @@ if($xdoc.site.PublishedApps){
                 $command += " -Visible `$False"
             }
             $command += " -WorkingDirectory """ + $PublishedApp.WorkingDirectory + """"
-            #write-host $command
-            #Pause
             try {
                 $App = Invoke-Expression $command
                 try {
@@ -1039,6 +1159,19 @@ if($xdoc.site.PublishedApps){
                         $j++
                     }
                 }
+                if($k -ne 0){
+                    while($k -lt $countk){
+                        Add-BrokerApplication $App -ApplicationGroup $PublishedApp.AssociatedApplicationGroupName[$k]
+                        $j++
+                    }
+                }
+                #try{
+                    write-host "trying import"
+                    Add-BrokerApplication $App -ApplicationGroup $PublishedApp.AssociatedApplicationGroupName
+                #}
+                #catch{
+                    #No Application Group to Assign
+                #}
             }
             catch {
                 Write-Host "An error occured while adding a new PublishedApp" -ForegroundColor Red
@@ -1059,7 +1192,7 @@ if($xdoc.site.PublishedApps){
 #Setting FileTypeAssociations
 ################################################################################################
 
-Write-Host "Setting FileTypeAssociations config... "a
+Write-Host "Setting FileTypeAssociations config... "
 if($xdoc.site.FileTypeAssociations){
     $FileTypeAssociations = $xdoc.site.FileTypeAssociations.FileTypeAssociation
     foreach($FileTypeAssociation in $FileTypeAssociations){
