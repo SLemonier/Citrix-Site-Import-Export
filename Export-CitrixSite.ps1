@@ -692,7 +692,7 @@ try {
                 $oxmlApplicationGroupAdminFolderName= $oXMLApplicationGroup.appendChild($Doc.CreateElement("AdminFolderName"))
             $oxmlApplicationGroupAdminFolderName.InnerText = $ApplicationGroup.AdminFolderName
             }
-        }
+        } catch {}
         $AssociatedDesktopGroupPriorities = $ApplicationGroup.AssociatedDesktopGroupPriorities
         foreach ($AssociatedDesktopGroupPriority in $AssociatedDesktopGroupPriorities){
             $oXMLApplicationGroupAssociatedDesktopPriority = $oXMLApplicationGroup.appendChild($Doc.CreateElement("AssociatedDesktopGroupPriority"))
