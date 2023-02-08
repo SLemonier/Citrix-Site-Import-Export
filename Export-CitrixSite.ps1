@@ -748,7 +748,7 @@ Write-Host "OK" -ForegroundColor Green
 Write-Host "Enumerating Published Apps config... " -NoNewline
 try {
     $oXMLPublishedApps = $oXMLRoot.appendChild($Doc.CreateElement("PublishedApps"))
-    $PublishedApps = Get-BrokerApplication
+    $PublishedApps = Get-BrokerApplication -MaxRecordCount 10000
     foreach ($PublishedApp in $PublishedApps) {
         $oxmlPublishedApp = $oXMLPublishedApps.appendChild($Doc.CreateElement("PublishedApp"))
         $oxmlPublishedAppname = $oxmlPublishedApp.appendChild($Doc.CreateElement("Name"))
