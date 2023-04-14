@@ -1000,18 +1000,18 @@ if($xdoc.site.ApplicationGroups){
             try {
                 $AppGroup = Invoke-Expression $command
                 try {
-                    $count = $PublishedApp.AssociatedUserFullName.count
+                    $count = $PublishedApp.AssociatedUserName.count
                     $i=0
                     while ($i -lt $count) {
-                        $AssociatedUserFullName = "$env:USERDOMAIN\" + $ApplicationGroup.AssociatedUserFullName[$i]
-                        Add-BrokerUser -Name $AssociatedUserFullName -ApplicationGroup $AppGroup
+                        $AssociatedUserName = "$env:USERDOMAIN\" + $ApplicationGroup.AssociatedUserName[$i]
+                        Add-BrokerUser -Name $AssociatedUserName -ApplicationGroup $AppGroup
                         $i++
                     }
                 }
                 catch {
                     try{
-                        $AssociatedUserFullName = "$env:USERDOMAIN\" + $PublishedApp.AssociatedUserFullName
-                        Add-BrokerUser -Name $AssociatedUserFullName -ApplicationGroup $AppGroup
+                        $AssociatedUserName = "$env:USERDOMAIN\" + $PublishedApp.AssociatedUserName
+                        Add-BrokerUser -Name $AssociatedUserName -ApplicationGroup $AppGroup
                     }
                     catch {
                         #No User to assign to
@@ -1137,18 +1137,18 @@ if($xdoc.site.PublishedApps){
             try {
                 $App = Invoke-Expression $command
                 try {
-                    $count = $PublishedApp.AssociatedUserFullName.count
+                    $count = $PublishedApp.AssociatedUserName.count
                     $i=0
                     while ($i -lt $count) {
-                        $AssociatedUserFullName = "$env:USERDOMAIN\" + $PublishedApp.AssociatedUserFullName[$i]
-                        Add-BrokerUser -Name $AssociatedUserFullName -Application $App
+                        $AssociatedUserName = "$env:USERDOMAIN\" + $PublishedApp.AssociatedUserName[$i]
+                        Add-BrokerUser -Name $AssociatedUserName -Application $App
                         $i++
                     }
                 }
                 catch {
                     try{
-                        $AssociatedUserFullName = "$env:USERDOMAIN\" + $PublishedApp.AssociatedUserFullName
-                        Add-BrokerUser -Name $AssociatedUserFullName -Application $App
+                        $AssociatedUserName = "$env:USERDOMAIN\" + $PublishedApp.AssociatedUserName
+                        Add-BrokerUser -Name $AssociatedUserName -Application $App
                     }
                     catch {
                         #No User to assign to

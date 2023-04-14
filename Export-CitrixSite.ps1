@@ -703,10 +703,10 @@ try {
             $oXMLApplicationGroupAssociatedDesktopGroupUid = $oXMLApplicationGroup.appendChild($Doc.CreateElement("AssociatedDesktopGroupUid"))
             $oXMLApplicationGroupAssociatedDesktopGroupUid.InnerText = $AssociatedDesktopGroupUid
         }
-        $AssociatedUserFullNames = $ApplicationGroup.AssociatedUserFullNames
-        foreach ($AssociatedUserFullName in $AssociatedUserFullNames){
-            $oXMLApplicationGroupUserFullName = $oXMLApplicationGroup.appendChild($Doc.CreateElement("AssociatedUserFullName"))
-            $oXMLApplicationGroupUserFullName.InnerText = $AssociatedUserFullName
+        $AssociatedUserNames = $ApplicationGroup.AssociatedUserNames
+        foreach ($AssociatedUserName in $AssociatedUserNames){
+            $oXMLApplicationGroupUserName = $oXMLApplicationGroup.appendChild($Doc.CreateElement("AssociatedUserName"))
+            $oXMLApplicationGroupUserName.InnerText = $AssociatedUserName
         }
         $oXMLApplicationGroupDescription = $oXMLApplicationGroup.appendChild($Doc.CreateElement("Description"))
         $oXMLApplicationGroupDescription.InnerText = $ApplicationGroup.Description
@@ -787,10 +787,10 @@ try {
             $DesktopGroupName = (Get-BrokerDesktopGroup -Uid $AssociatedDesktopGroupUid).Name
             $oxmlPublishedAppAssociatedDesktopGroupName.InnerText = $DesktopGroupName
         }
-        $AssociatedUserFullNames = $PublishedApp.AssociatedUserFullNames
-        foreach ($AssociatedUserFullName in $AssociatedUserFullNames){
-            $oxmlPublishedAppAssociatedUserFullName = $oxmlPublishedApp.appendChild($Doc.CreateElement("AssociatedUserFullName"))
-            $oxmlPublishedAppAssociatedUserFullName.InnerText = $AssociatedUserFullName
+        $AssociatedUserNames = $PublishedApp.AssociatedUserNames
+        foreach ($AssociatedUserName in $AssociatedUserNames){
+            $oxmlPublishedAppAssociatedUserName = $oxmlPublishedApp.appendChild($Doc.CreateElement("AssociatedUserName"))
+            $oxmlPublishedAppAssociatedUserName.InnerText = $AssociatedUserName
         }
         $oxmlPublishedAppEnabled = $oxmlPublishedApp.appendChild($Doc.CreateElement("Enabled"))
         $oxmlPublishedAppEnabled.InnerText = $PublishedApp.Enabled
