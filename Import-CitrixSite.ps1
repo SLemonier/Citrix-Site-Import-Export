@@ -1049,7 +1049,8 @@ if($xdoc.site.PublishedApps){
     foreach($PublishedApp in $PublishedApps){
         if(!(Get-Brokerapplication -Name $PublishedApp.Name -errorAction SilentlyContinue)){
             Write-host "Adding new PublishedApp" $PublishedApp.Name"... " -NoNewline
-            $command = "New-Brokerapplication -Name """ + $PublishedApp.Name + """"
+            $PublishedAppName = ($PublishedApp.Name).Split("\")[-1]
+            $command = "New-Brokerapplication -Name """ + $PublishedAppName + """"
             $command += " -CommandLineExecutable """ + $PublishedApp.CommandLineExecutable + """"
             $j=0
             $DGAssociated = $false
