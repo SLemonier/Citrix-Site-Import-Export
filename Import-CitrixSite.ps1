@@ -1078,7 +1078,7 @@ if($xdoc.site.PublishedApps){
                     $command += " -ApplicationGroup """ + $PublishedApp.AssociatedApplicationGroupName + """"
                 }
             }
-            if(!(Get-BrokerAdminFolder -Name $PublishedApp.AdminFolderName -errorAction SilentlyContinue)){
+            if(!(Get-BrokerAdminFolder -Name $PublishedApp.AdminFolderName -errorAction SilentlyContinue) -and $PublishedApp.AdminFolderName -ne ""){
                 New-BrokerAdminFolder -FolderName ($PublishedApp.AdminFolderName).Replace("\","") | Out-Null
             }
             if($PublishedApp.AdminFolderName -ne ""){
