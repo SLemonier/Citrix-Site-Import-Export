@@ -156,7 +156,7 @@ if($xdoc.site.tags){
         if(!(Get-BrokerTag -Name $tag.Name -errorAction SilentlyContinue)){
             Write-host "Adding new tag" $tag.Name"... " -NoNewline
             try {
-                New-BrokerTag -Name $scope.Name  | out-null
+                New-BrokerTag -Name $tag.Name  | out-null
                 Write-Host "OK" -ForegroundColor Green
             }
             catch {
