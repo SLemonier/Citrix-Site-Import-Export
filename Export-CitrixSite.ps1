@@ -712,8 +712,12 @@ try {
         $oXMLApplicationGroupDescription.InnerText = $ApplicationGroup.Description
         $oXMLApplicationGroupEnabled = $oXMLApplicationGroup.appendChild($Doc.CreateElement("Enabled"))
         $oXMLApplicationGroupEnabled.InnerText = $ApplicationGroup.Enabled
-        $oxmlApplicationGroupApplicationGroupname = $oXMLApplicationGroup.appendChild($Doc.CreateElement("ApplicationGroupName"))
-        $oxmlApplicationGroupApplicationGroupname.InnerText = $ApplicationGroup.ApplicationGroupName
+        try{
+            if($ApplicationGroup.ApplicationGroupName -ne ""){
+                $oxmlApplicationGroupApplicationGroupname = $oXMLApplicationGroup.appendChild($Doc.CreateElement("ApplicationGroupName"))
+                $oxmlApplicationGroupApplicationGroupname.InnerText = $ApplicationGroup.ApplicationGroupName
+            }
+        } catch {}
         $oXMLApplicationGroupRestrictToTag = $oXMLApplicationGroup.appendChild($Doc.CreateElement("RestrictToTag"))
         $oXMLApplicationGroupRestrictToTag.InnerText = $ApplicationGroup.RestrictToTag
         $Scopes = $ApplicationGroup.Scopes
