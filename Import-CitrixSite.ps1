@@ -1079,7 +1079,7 @@ if($xdoc.site.PublishedApps){
                 }
             }
             if(!(Get-BrokerAdminFolder -Name $PublishedApp.AdminFolderName -errorAction SilentlyContinue)){
-                New-BrokerAdminFolder -FolderName $PublishedApp.AdminFolderName.Replace("\","") | Out-Null
+                New-BrokerAdminFolder -FolderName ($PublishedApp.AdminFolderName).Replace("\","") | Out-Null
             }
             if($PublishedApp.AdminFolderName -ne ""){
                 $command += " -AdminFolder """ + $PublishedApp.AdminFolderName + """"
@@ -1091,7 +1091,7 @@ if($xdoc.site.PublishedApps){
                 if($PublishedApp.CommandLineArguments -match "%" -and $PublishedApp.CommandLineArguments -notlike "%*"){
                     $command += " -CommandLineArguments " + $PublishedApp.CommandLineArguments + ""
                 } else {
-                    $command += " -CommandLineArguments """ + $PublishedApp.CommandLineArguments.Replace("`"","```"") + """"
+                    $command += " -CommandLineArguments """ + ($PublishedApp.CommandLineArguments).Replace("`"","```"") + """"
                 }
             }
             $command += " -Description """ + $PublishedApp.Description + """"
